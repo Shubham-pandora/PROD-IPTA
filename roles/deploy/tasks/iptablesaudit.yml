@@ -53,16 +53,3 @@
     insertafter: EOF
   delegate_to: localhost
 
-# - name: Create CSV file with header if it doesn't exist
-#   shell: |
-#     [ -f /opt/nodejs/IPTA/iptables_diff.csv ] || echo '"Server IP","Original","Audit"' > /opt/nodejs/IPTA/iptables_diff.csv
-#   delegate_to: localhost
-#   run_once: true
-
-# - name: Append CSV row to file
-#   lineinfile:
-#     path: /opt/nodejs/IPTA/iptables_diff.csv
-#     line: "{{ csv_line }}"
-#     create: yes
-#     insertafter: EOF
-#   delegate_to: localhost
