@@ -20,20 +20,9 @@
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups['CACTI_VLAN48'] | join(',') }} --dport 161 -j ACCEPT
 {% if (inventory_hostname in groups['TLSPROXY_VLAN48']) %}
 ################## TLSPROXY ##################
-{% for host in groups['TLSPROXY_dep_PUBLIC'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 5060 -j ACCEPT
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 5060 -j ACCEPT
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 5061 -j ACCEPT
-{% endfor %}
-{% for host in groups['TLSPROXY_dep_5060'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 5060 -j ACCEPT
-{% endfor %}
-{% for host in groups['TLSPROXY_dep_5060_TCP'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 5060 -j ACCEPT
-{% endfor %}
+-A INPUT -m state --state NEW -m udp -p udp --dport 5060 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 5060 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 5061 -j ACCEPT
 {% for host in groups['TLSPROXY_dep_9060'] %}
 # {{ host }} ip's
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 9060 -j ACCEPT
@@ -41,17 +30,10 @@
 {% endif %}
 {% if (inventory_hostname in groups['TLSMOBILEPROXY_VLAN48']) %}
 ##################  TLSMOBILEPROXY  ##################
-{% for host in groups['TLSMOBILEPROXY_dep_PUBLIC_6061'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 6061 -j ACCEPT
-{% endfor %}
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 6061 -j ACCEPT
 {% for host in groups['TLSMOBILEPROXY_dep_5060_UDP'] %}
 #{{ host }} ip's
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 5060 -j ACCEPT
-{% endfor %}
-{% for host in groups['TLSMOBILEPROXY_dep_5060_TCP'] %}
-#{{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 5060 -j ACCEPT
 {% endfor %}
 {% for host in groups['TLSMOBILEPROXY_dep_9060'] %}
 #{{ host }} ip's
@@ -60,17 +42,10 @@
 {% endif %}
 {% if (inventory_hostname in groups['TEAMSPROXY_VLAN48']) %}
 ##################  TEAMSPROXY  ##################
-{% for host in groups['TEAMSPROXY_dep_PUBLIC'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 5060 -j ACCEPT
-{% endfor %}
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 5060 -j ACCEPT
 {% for host in groups['TEAMSPROXY_dep_5060_UDP'] %}
 #{{ host }} ip's
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 5060 -j ACCEPT
-{% endfor %}
-{% for host in groups['TEAMSPROXY_dep_5060_TCP'] %}
-#{{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 5060 -j ACCEPT
 {% endfor %}
 {% for host in groups['TEAMSPROXY_dep_9060'] %}
 #{{ host }} ip's
@@ -92,12 +67,26 @@
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 5035 -j ACCEPT
 {% endfor %}
 {% endif %}
+{% if (inventory_hostname in groups['WSINREGISTAR_VLAN48']) %}
+##################  WSINREGISTAR  ##################
+{% for host in groups['WSINREGISTAR_dep_5062'] %}
+#{{ host }} ip's
+-A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }}  --dport 5062 -j ACCEPT
+{% endfor %}
+{% endif %}
 {% if (inventory_hostname in groups['RTPPROXY_VLAN48']) %}
 ##################  RTPPROXY  ##################
 -A INPUT -m state --state NEW -m udp -p udp --dport 20000:30000 -j ACCEPT
 {% for host in groups['RTPPROXY_dep_6089'] %}
 #{{ host }} ip's
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }}  --dport 6089 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['TCPSERVER_VLAN48']) %}
+################## TCPSERVER ##################
+{% for host in groups['TCPSERVER_dep_8989'] %}
+# {{ host }} ip's
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 8989 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['WSICP_VLAN48']) %}
@@ -117,7 +106,6 @@
 {% if (inventory_hostname in groups['UMS_VLAN48']) %}
 ##################  UMS  ##################
 -A INPUT -m state --state NEW -m udp -p udp --dport 10000:20000 -j ACCEPT
--A INPUT -m state --state NEW -m udp -p udp -s {{ inventory_hostname }} --dport 6090 -j ACCEPT
 {% for host in groups['UMS_dep_6090'] %}
 #{{ host }} ip's
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 6090 -j ACCEPT
@@ -169,13 +157,14 @@
 {% endif %}
 {% if (inventory_hostname in groups['FWDIN_VLAN48']) %}
 ##################  FWDIN  ##################
-{% for host in groups['FWDIN_dep_5060'] %}
-#{{ host }} ip's
--A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 5060 -j ACCEPT
-{% endfor %}
+-A INPUT -m state --state NEW -m udp -p udp --dport 5060 -j ACCEPT
 {% for host in groups['FWDIN_dep_9060'] %}
 #{{ host }} ip's
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 9060 -j ACCEPT
+{% endfor %}
+{% for host in groups['FWDIN_dep_5060'] %}
+#{{ host }} ip's
+-A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 5060 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['FWDOUT_VLAN48']) %}
@@ -187,6 +176,17 @@
 {% for host in groups['FWDOUT_dep_5070'] %}
 #{{ host }} ip's
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 5070 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['LNP_TOOL_VLAN48']) %}
+##################  LNP_TOOL  ##################
+{% for host in groups['LNP_TOOL_deps_8800'] %}
+#{{ host }} ip's
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 8800 -j ACCEPT
+{% endfor %}
+{% for host in groups['LNP_TOOL_deps_6789'] %}
+#{{ host }} ip's
+-A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 6789 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['WEBRTC_MEDIA_SERVER_VLAN48']) %}
@@ -227,9 +227,9 @@
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 5072 -j ACCEPT
 {% endfor %}
 #FAX_HTTPD
-{% for host in groups['FAX_HTTPD_dep_8443'] %}
+{% for host in groups['FAX_HTTPD_dep_443'] %}
 #{{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 8443 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 443 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['3PCC_VLAN48']) %}
@@ -245,11 +245,12 @@
 {% endif %}
 {% if (inventory_hostname in groups['PROVISIONING_OHP_VLAN48']) %}
 ##################  PROVISIONING_OHP  ##################
-{% for host in groups['PROVISIONING_OHP_dep_PUBLIC'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 80 -j ACCEPT
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 443 -j ACCEPT
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 444 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 444 -j ACCEPT
+{% for host in groups['PROVISIONING_OHP_dep_22'] %}
+#{{ host }} ip's
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 22 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['WSPRESENCE_VLAN48']) %}
@@ -289,9 +290,9 @@
 {% if (inventory_hostname in groups['IM_NOTIFICATION_SERVER_VLAN48']) %}
 ##################  IM_NOTIFICATION_SERVER  ##################
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 8890 -j ACCEPT
-{% for host in groups['IM_NOTIFICATION_SERVER_dep_9999'] %}
+{% for host in groups['IM_NOTIFICATION_SERVER_dep_9998'] %}
 #{{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 9999 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 9998 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['NODEPROXY_VLAN48']) %}
@@ -342,18 +343,18 @@
 {% if (inventory_hostname in groups['FREESWITCH_VLAN48']) %}
 ##################  FREESWITCH  ##################
 -A INPUT -m state --state NEW -m udp -p udp --dport 21000:31000 -j ACCEPT
-{% for host in groups['FREESWITCH_dep_5088_TCP'] %}
-#{{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 5088 -j ACCEPT
-{% endfor %}
 {% for host in groups['FREESWITCH_dep_5088_UDP'] %}
 #{{ host }} ip's
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 5088 -j ACCEPT
 {% endfor %}
+{% for host in groups['FREESWITCH_dep_5088_TCP'] %}
+#{{ host }} ip's
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 5088 -j ACCEPT
+{% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['WEBRTC_REFLECTOR_JANUS_VLAN48']) %}
 ##################  WEBRTC_REFLECTOR_JANUS  ##################
--A INPUT -m state --state NEW -m udp -p udp --dport 10000:30000 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 10000:60000 -j ACCEPT
 {% for host in groups['WEBRTC_REFLECTOR_JANUS_dep_8188'] %}
 #{{ host }} ip's
 -A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 8188 -j ACCEPT
@@ -363,7 +364,7 @@
 ##################  HAPROXY  ##################
 {% for host in groups['HAPROXY_dep_25'] %}
 #{{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 25 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 25 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['STREAMS_VLAN48']) %}
@@ -381,11 +382,32 @@
 -A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 4010:4120 -j ACCEPT
 {% endfor %}
 {% endif %}
+{% if (inventory_hostname in groups['STREAMS_DOWNLOAD_VLAN48']) %}
+##################  STREAMS_DOWNLOAD  ##################
+{% for host in groups['STREAMS_DOWNLOAD_dep_8480'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8480 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['STREAMS_CLIENTS_VLAN48']) %}
+##################  STREAMS_CLIENTS  ##################
+{% for host in groups['STREAMS_CLIENTS_dep_8480'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8480 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['STREAMS_STG_VLAN48']) %}
+##################  STREAMS_STG  ##################
+{% for host in groups['STREAMS_STG_dep_8480'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8480 -j ACCEPT
+{% endfor %}
+{% endif %}
 {% if (inventory_hostname in groups['WSGATEKEEPER_VLAN48']) %}
 ##################  WSGATEKEEPER ##################
-{% for host in groups['WSGATEKEEPER_dep_8280'] %}
+{% for host in groups['WSGATEKEEPER_dep_8380'] %}
 #{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8280 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8380 -j ACCEPT
 {% endfor %}
 {% for host in groups['WSGATEKEEPER_dep_8949'] %}
 #{{ host }} ip's
@@ -394,32 +416,46 @@
 {% endif %}
 {% if (inventory_hostname in groups['WSGATEKEEPER_HTTPD_VLAN48']) %}
 ##################  WSGATEKEEPER_HTTPD ##################
-{% for host in groups['WSGATEKEEPER_HTTPD_dep_80'] %}
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT
+{% for host in groups['WSGATEKEEPER_HTTPD_dep_443'] %}
 #{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 80 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 443 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 443 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['WSGATEKEEPER_SBC_VLAN48']) %}
+##################  WSGATEKEEPER_SBC ##################
+{% for host in groups['WSGATEKEEPER_SBC_dep_8380'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8380 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['ADMINFIVE_VLAN48']) %}
 ##################  ADMINFIVE  ##################
-{% for host in groups['ADMINFIVE_dep_8080'] %}
+{% for host in groups['ADMINFIVE_dep_8081'] %}
 #{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8080 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8081 -j ACCEPT
 {% endfor %}
 {% for host in groups['ADMINFIVE_dep_45564'] %}
 #{{ host }} ip's
 -A INPUT -p udp -m state --state NEW -m udp -s {{ groups[host] | join(',') }} --dport 45564 -j ACCEPT
 {% endfor %}
-{% for host in groups['ADMINFIVE_dep_4041_4151'] %}
+{% for host in groups['ADMINFIVE_dep_4040_4151'] %}
 #{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 4041:4151 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 4040:4151 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['ADMINFIVE_STG_VLAN48']) %}
+##################  ADMINFIVE_STG  ##################
+{% for host in groups['ADMINFIVE_STG_dep_8081'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8081 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['SBADMIN_VLAN48']) %}
 ##################  SBADMIN  ##################
-{% for host in groups['SBADMIN_dep_7070'] %}
+{% for host in groups['SBADMIN_dep_7071'] %}
 #{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 7070 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 7071 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['WSAPIHANDLER_VLAN48']) %}
@@ -431,9 +467,9 @@
 {% endif %}
 {% if (inventory_hostname in groups['WSAUTH_VLAN48']) %}
 ##################  WSAUTH  ##################
-{% for host in groups['WSAUTH_dep_9090'] %}
+{% for host in groups['WSAUTH_dep_9091'] %}
 #{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 9090 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 9091 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['REDIRECTION_DASHBOARD_VLAN48']) %}
@@ -464,11 +500,18 @@
 -A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8080 -j ACCEPT
 {% endfor %}
 {% endif %}
+{% if (inventory_hostname in groups['LTD_REPORTS_GLOBALCDR_VLAN48']) %}
+##################  LTD_REPORTS  ##################
+{% for host in groups['LTD_REPORTS_GLOBALCDR_dep_8082'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8082 -j ACCEPT
+{% endfor %}
+{% endif %}
 {% if (inventory_hostname in groups['CFD_TOOL_VLAN48']) %}
 ##################  CFD_TOOL  ##################
-{% for host in groups['CFD_TOOL_dep_8480'] %}
+{% for host in groups['CFD_TOOL_dep_8780'] %}
 #{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8480 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8780 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['SPARK_DRIVER_VLAN48']) %}
@@ -484,16 +527,16 @@
 {% endif %}
 {% if (inventory_hostname in groups['PARTNER_PORTAL_VLAN48']) %}
 ##################  PARTNER_PORTAL  ##################
-{% for host in groups['PARTNER_PORTAL_dep_6008'] %}
+{% for host in groups['PARTNER_PORTAL_dep_6001'] %}
 #{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 6008 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 6001 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['QUOTE_NOW_VLAN48']) %}
 ##################  QUOTE_NOW  ##################
-{% for host in groups['QUOTE_NOW_dep_6019'] %}
+{% for host in groups['QUOTE_NOW_dep_7001'] %}
 #{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 6019 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 7001 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['WSCONTACTS_VLAN48']) %}
@@ -516,26 +559,16 @@
 #{{ host }} ip's
 -A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8480 -j ACCEPT
 {% endfor %}
+{% for host in groups['STORAGEREPLICATOR_SERVER_dep_61616'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61616 -j ACCEPT
+{% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['WSBILLINGENGINE_VLAN48']) %}
 ##################  WSBILLINGENGINE  ##################
 {% for host in groups['WSBILLINGENGINE_dep_4444'] %}
 #{{ host }} ip's
 -A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 4444 -j ACCEPT
-{% endfor %}
-{% endif %}
-{% if (inventory_hostname in groups['OPENSIPSFRAMEWORKS_VLAN48']) %}
-##################  OPENSIPSFRAMEWORKS  ##################
-{% for host in groups['OPENSIPSFRAMEWORKS_dep_3000'] %}
-#{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 3000 -j ACCEPT
-{% endfor %}
-{% endif %}
-{% if (inventory_hostname in groups['OPENSIPS_GATEWAY_VLAN48']) %}
-##################  OPENSIPS_GATEWAY  ##################
-{% for host in groups['OPENSIPS_GATEWAY_dep_8090'] %}
-#{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8090 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['REPORT_MANAGER_VLAN48']) %}
@@ -547,9 +580,9 @@
 {% endif %}
 {% if (inventory_hostname in groups['EMAILENGINE_VLAN48']) %}
 ##################  EMAILENGINE  ##################
-{% for host in groups['EMAILENGINE_dep_83'] %}
-#{{ host }} ip'EMAILENGINE_dep_83
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 83 -j ACCEPT
+{% for host in groups['EMAILENGINE_dep_81'] %}
+#{{ host }} ip'
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 81 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['SMSGATEWAY_VLAN48']) %}
@@ -583,6 +616,11 @@
 #{{ host }} ip's
 -A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} -j ACCEPT
 {% endfor %}
+{% for host in groups['HADOOP_CLUSTER_dep_9870'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 9870 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 9864 -j ACCEPT
+{% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['SPARK_CLUSTER_VLAN48']) %}
 ##################  SPARK_CLUSTER  ##################
@@ -590,63 +628,120 @@
 #{{ host }} ip's
 -A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} -j ACCEPT
 {% endfor %}
+{% for host in groups['SPARK_CLUSTER_dep_8080'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8080 -j ACCEPT
+{% endfor %}
 {% endif %}
-{% if (inventory_hostname in groups['AMQ_VLAN48']) %}
-##################  AMQ  ##################
-{% for host in groups['AMQ_dep_61616'] %}
+{% if (inventory_hostname in groups['ACTIVEMQ_LTD_VLAN48']) %}
+##################  ACTIVEMQ_LTD  ##################
+{% for host in groups['ACTIVEMQ_LTD_dep_61616'] %}
 #{{ host }} ip's
 -A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61616 -j ACCEPT
 {% endfor %}
-{% for host in groups['AMQ_dep_61614'] %}
+{% for host in groups['ACTIVEMQ_LTD_dep_61614'] %}
 #{{ host }} ip's
 -A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61614 -j ACCEPT
 {% endfor %}
-{% for host in groups['AMQ_dep_9162'] %}
+{% for host in groups['ACTIVEMQ_LTD_dep_9162'] %}
 #{{ host }} ip's
 -A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 9162 -j ACCEPT
 {% endfor %}
-{% for host in groups['AMQ_dep_61613'] %}
+{% endif %}
+{% if (inventory_hostname in groups['ACTIVEMQ_GK_VLAN48']) %}
+##################  ACTIVEMQ_GK  ##################
+{% for host in groups['ACTIVEMQ_GK_dep_61616'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61616 -j ACCEPT
+{% endfor %}
+{% for host in groups['ACTIVEMQ_GK_dep_61614'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61614 -j ACCEPT
+{% endfor %}
+{% for host in groups['ACTIVEMQ_GK_dep_9162'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 9162 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['ACTIVEMQ_COHERENCE_VLAN48']) %}
+##################  ACTIVEMQ_COHERENCE  ##################
+{% for host in groups['ACTIVEMQ_COHERENCE_dep_61616'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61616 -j ACCEPT
+{% endfor %}
+{% for host in groups['ACTIVEMQ_COHERENCE_dep_61614'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61614 -j ACCEPT
+{% endfor %}
+{% for host in groups['ACTIVEMQ_COHERENCE_dep_9162'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 9162 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['ACTIVEMQ_HIPPA_VLAN48']) %}
+##################  ACTIVEMQ_HIPPA  ##################
+{% for host in groups['ACTIVEMQ_HIPPA_dep_61616'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61616 -j ACCEPT
+{% endfor %}
+{% for host in groups['ACTIVEMQ_HIPPA_dep_9162'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 9162 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['ACTIVEMQ_WEBCRON_VLAN48']) %}
+##################  ACTIVEMQ_WEBCRON  ##################
+{% for host in groups['ACTIVEMQ_WEBCRON_dep_61616'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61616 -j ACCEPT
+{% endfor %}
+{% for host in groups['ACTIVEMQ_WEBCRON_dep_61614'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61614 -j ACCEPT
+{% endfor %}
+{% for host in groups['ACTIVEMQ_WEBCRON_dep_61613'] %}
 #{{ host }} ip's
 -A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61613 -j ACCEPT
 {% endfor %}
-{% endif %}
-{% if (inventory_hostname in groups['STREAMSUCAPP_VLAN48']) %}
-##################  STREAMSUCAPP SIMULATOR  ##################
-{% for host in groups['STREAMSUCAPP_deps_8062'] %}
+{% for host in groups['ACTIVEMQ_WEBCRON_dep_9162'] %}
 #{{ host }} ip's
--A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8062 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 9162 -j ACCEPT
 {% endfor %}
 {% endif %}
-{% if (inventory_hostname in groups['TCPSERVER_VLAN48']) %}
-################## TCPSERVER ##################
-{% for host in groups['TCPSERVER_dep_8989'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 8989 -j ACCEPT
+{% if (inventory_hostname in groups['ACTIVEMQ_GLOBALCDR_VLAN48']) %}
+##################  ACTIVEMQ_GLOBALCDR  ##################
+{% for host in groups['ACTIVEMQ_GLOBALCDR_dep_61616'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61616 -j ACCEPT
+{% endfor %}
+{% for host in groups['ACTIVEMQ_GLOBALCDR_dep_61614'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 61614 -j ACCEPT
+{% endfor %}
+{% for host in groups['ACTIVEMQ_GLOBALCDR_dep_9162'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 9162 -j ACCEPT
 {% endfor %}
 {% endif %}
-{% if (inventory_hostname in groups['LNP_TOOL_VLAN48']) %}
-##################  LNP_TOOL  ##################
-{% for host in groups['LNP_TOOL_deps_8800'] %}
+{% if (inventory_hostname in groups['CONCMONITOR_UMS_VLAN48']) %}
+##################  CONCMONITOR_UMS  ##################
+{% for host in groups['CONCMONITOR_UMS_dep_8989'] %}
 #{{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 8800 -j ACCEPT
-{% endfor %}
-{% for host in groups['LNP_TOOL_deps_6789'] %}
-#{{ host }} ip's
--A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 6789 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8989 -j ACCEPT
 {% endfor %}
 {% endif %}
-{% if (inventory_hostname in groups['WSINREGISTAR_VLAN48']) %}
-##################  WSINREGISTAR  ##################
-{% for host in groups['WSINREGISTAR_dep_5062'] %}
+{% if (inventory_hostname in groups['CONCMONITOR_WEBRTC_VLAN48']) %}
+##################  CONCMONITOR_WEBRTC  ##################
+{% for host in groups['CONCMONITOR_WEBRTC_dep_8990'] %}
 #{{ host }} ip's
--A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }}  --dport 5062 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 8990 -j ACCEPT
 {% endfor %}
 {% endif %}
-{% if (inventory_hostname in groups['HEPICSRV_VLAN48']) %}
-##################  HEPIC_SERVER  ##################
-{% for host in groups['HEPICSRV_dep_7789'] %}
+{% if (inventory_hostname in groups['LCRADMIN_VLAN48']) %}
+##################  LCRADMIN  ##################
+{% for host in groups['LCRADMIN_dep_80'] %}
 #{{ host }} ip's
--A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }}  --dport 7789 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 80 -j ACCEPT
 {% endfor %}
 {% endif %}
 {% if (inventory_hostname in groups['STREAMSGATEWAY_VLAN48']) %}
@@ -684,143 +779,36 @@
 -A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }}  --dport 5064 -j ACCEPT
 {% endfor %}
 {% endif %}
-{% if (inventory_hostname in groups['MONGODB_SET1_VLAN48']) %}
-################## MONGODB_SET1 ##################
-{% for host in groups['MONGODB_SET1_dep_27017'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 27017 -j ACCEPT
+{% if (inventory_hostname in groups['NODEPROXY_STG_VLAN48']) %}
+##################  NODEPROXY_STG  ##################
+{% for host in groups['NODEPROXY_STG_dep_8082'] %}
+#{{ host }} ip's
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }}  --dport 8082 -j ACCEPT
 {% endfor %}
 {% endif %}
-{% if (inventory_hostname in groups['MONGODB_SET2_VLAN48']) %}
-################## MONGODB_SET2 ##################
-{% for host in groups['MONGODB_SET2_dep_27017'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 27017 -j ACCEPT
+{% if (inventory_hostname in groups['FREESWITCH_STG_VLAN48']) %}
+##################  FREESWITCH_STG  ##################
+-A INPUT -m state --state NEW -m udp -p udp --dport 21000:31000 -j ACCEPT
+{% for host in groups['FREESWITCH_STG_dep_5088'] %}
+#{{ host }} ip's
+-A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }}  --dport 5088 -j ACCEPT
 {% endfor %}
 {% endif %}
-{% if (inventory_hostname in groups['MASTER_LIVEPBX_VLAN48']) %}
-################## MASTER_LIVEPBX ##################
-################## MULTI_MASTER ##################
-{% for host in groups['LIVEPBX_MULTI_MASTER_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## FEDERATED ##################
-{% for host in groups['FEDERATED_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## SERVICES ##################
-{% for host in groups['MASTER_LIVEPBX_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
+{% if (inventory_hostname in groups['WEBRTC_REFLECTOR_JANUS_STG_VLAN48']) %}
+##################  WEBRTC_REFLECTOR_JANUS_STG  ##################
+-A INPUT -m state --state NEW -m udp -p udp --dport 10000:60000 -j ACCEPT
 {% endif %}
-{% if (inventory_hostname in groups['MASTER_WAREHOUSEPBX_VLAN48']) %}
-################## MASTER_WAREHOUSEPBX ##################
-################## MULTI_MASTER ##################
-{% for host in groups['WAREHOUSEPBX_MULTI_MASTER_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## FEDERATED ##################
-{% for host in groups['FEDERATED_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## SERVICES ##################
-{% for host in groups['MASTER_WAREHOUSEPBX_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-{% endif %}
-{% if (inventory_hostname in groups['MASTER_STREAMS_VLAN48']) %}
-################## MASTER_STREAMS ##################
-################## MULTI_MASTER ##################
-{% for host in groups['STREAMS_MULTI_MASTER_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## FEDERATED ##################
-{% for host in groups['FEDERATED_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## SERVICES ##################
-{% for host in groups['MASTER_STREAMS_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-{% endif %}
-{% if (inventory_hostname in groups['GLOBALCDR_STREAMSLET_VLAN48']) %}
-################## GLOBALCDR_STREAMSLET ##################
-################## MULTI_MASTER ##################
-{% for host in groups['GLOBALCDR_STREAMSLET_MULTI_MASTER_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## FEDERATED ##################
-{% for host in groups['FEDERATED_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## SERVICES ##################
-{% for host in groups['GLOBALCDR_STREAMSLET_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-{% endif %}
-{% if (inventory_hostname in groups['NRDB_VLAN48']) %}
-################## NRDB ##################
-################## FEDERATED ##################
-{% for host in groups['FEDERATED_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## SERVICES ##################
-{% for host in groups['NRDB_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-{% endif %}
-{% if (inventory_hostname in groups['SLAVE_LIVEPBX_VLAN48']) %}
-################## SLAVE_LIVEPBX ##################
-################## FEDERATED ##################
-{% for host in groups['FEDERATED_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## SERVICES ##################
-{% for host in groups['SLAVE_LIVEPBX_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-{% endif %}
-{% if (inventory_hostname in groups['SLAVE_WAREHOUSEPBX_VLAN48']) %}
-################## SLAVE_WAREHOUSEPBX ##################
-################## FEDERATED ##################
-{% for host in groups['FEDERATED_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## SERVICES ##################
-{% for host in groups['SLAVE_WAREHOUSEPBX_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-{% endif %}
-{% if (inventory_hostname in groups['SLAVE_STREAMS_VLAN48']) %}
-################## SLAVE_STREAMS ##################
-################## FEDERATED ##################
-{% for host in groups['FEDERATED_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
-################## SERVICES ##################
-{% for host in groups['SLAVE_STREAMS_dep_3306'] %}
-# {{ host }} ip's
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 3306 -j ACCEPT
-{% endfor %}
+{% if (inventory_hostname in groups['MATTOOL_VLAN48']) %}
+##################  MAT-TOOL  ##################
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 8088 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 4443 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 5060 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 5060 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 5061 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 20000 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 20000 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 20001 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 20001 -j ACCEPT
 {% endif %}
 {% if (inventory_hostname in groups['STREAMS3PCC_VLAN48']) %}
 ##################  STREAMS3PCC  ##################
@@ -888,6 +876,34 @@
 {% for host in groups['STREAMS_NODE_dep_4012'] %}
 #{{ host }} ip's
 -A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 4012 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['SMART_AI_VLAN48']) %}
+##################  SMART_AI  ##################
+{% for host in groups['SMART_AI_dep_5006'] %}
+#{{ host }} ip's
+-A INPUT -p tcp -m state --state NEW -m tcp -s {{ groups[host] | join(',') }} --dport 5006 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['SIPREC_RECORDER_VLAN48']) %}
+##################  SIPREC_RECORDER  ##################
+{% for host in groups['SIPREC_RECORDER_dep_5080'] %}
+#{{ host }} ip's
+-A INPUT -m state --state NEW -m udp -p udp -s {{ groups[host] | join(',') }} --dport 5080 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['STREAMS_RECORDINGSERVICE_VLAN48']) %}
+################## STREAMS_RECORDINGSERVICE ##################
+{% for host in groups['STREAMS_RECORDINGSERVICE_dep_8987'] %}
+###DCE_VLAN96
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups[host] | join(',') }} --dport 8987 -j ACCEPT
+{% endfor %}
+{% endif %}
+{% if (inventory_hostname in groups['DRACHTIO_SIPSERVER_VLAN48']) %}
+################## DRACHTIO_SIPSERVER ##################
+{% for host in groups['DCE_VLAN96'] %}
+###DCE_VLAN96
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups['DCW_VLAN96'] | join(',') }} --dport 5060 -j ACCEPT
 {% endfor %}
 {% endif %}
 ##################################################################
