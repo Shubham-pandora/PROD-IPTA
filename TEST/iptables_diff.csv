@@ -1,4 +1,0 @@
-"Server IP","Original","Audit"
-"192.168.0.104","",""
-"192.168.0.104","-A INPUT -p udp --dport 161 -s 10.30.0.0/16,50.79.34.80/29,45.16.98.160/29 -j ACCEPT","-A INPUT -m state --state NEW -m tcp -p tcp -s 10.0.0.0/8,208.77.4.0/24,208.77.5.0/24,208.77.6.0/24,208.77.7.0/24 --dport 2342 -j ACCEPT"
-"192.168.0.104","shubham","goel"
