@@ -1,0 +1,19 @@
+- name: Configure template
+  template:
+    src: iptables.j2
+    dest: "{{ iptables_config }}"
+    owner: root
+    group: root
+    mode: 0640
+    backup: yes
+  diff: true
+  notify:
+    - restart iptables
+
+- name: Ensure iptables service is enabled
+  service:
+    name: "{{ iptables_service }}"
+    enabled: yes
+    state: started
+  changed_when: false
+

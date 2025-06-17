@@ -1,0 +1,39 @@
+log_facility=daemon
+pid_file=/var/run/nrpe.pid
+server_port=5666
+server_address={{ inventory_hostname }}
+nrpe_user=nagios
+nrpe_group=nagios
+allowed_hosts=10.30.48.171
+dont_blame_nrpe=0
+allow_bash_command_substitution=0
+debug=0
+command_timeout=60
+connection_timeout=300
+
+command[check_ram]=/usr/lib64/nagios/libexec/check_ram
+command[check_swap]=/usr/lib64/nagios/libexec/check_swap -w 40% -c 20%
+command[check_load]=/usr/lib64/nagios/libexec/check_load -w 15,10,5 -c 30,25,20
+command[check_users]= /usr/lib64/nagios/libexec/check_users -w 5 -c 10
+command[check_total_procs]=/usr/lib64/nagios/libexec/check_procs -w 800 -c 850
+command[check_zombie_procs]=/usr/lib64/nagios/libexec/check_procs -w 5 -c 10 -s Z
+command[check_ntpd_service]=/usr/lib64/nagios/libexec/check_process -s chronyd -c 1
+command[check_ntpd_time_sync]=/usr/lib64/nagios/libexec/check_ntp_time -H ipa-dcw.panterranetworks.net -w 3 -c 5
+command[check_bandwidth]=/usr/lib64/nagios/libexec/check_bandwidth.sh -w 100 -c 150
+command[check_crontab_config]=/bin/sudo -u root /usr/lib64/nagios/libexec/check_crontab.sh
+command[check_Cron_wsadmin]=/bin/sudo -u root /usr/lib64/nagios/libexec/check_Cron_wsadmin.sh
+command[check_Cron_root]=/bin/sudo -u root /usr/lib64/nagios/libexec/check_Cron_root.sh
+command[check_default_route]=/bin/sudo -u root /usr/lib64/nagios/libexec/check_default_route.sh
+command[check_uptime]=/usr/lib64/nagios/plugins/check_uptime -w 115200 -c 129600
+
+
+#command[check_IP6tables]=/usr/lib64/nagios/libexec/check_ip6tables
+#command[check_iptables]=/usr/lib64/nagios/libexec/check_iptables8
+#command[check_iptables_new]=/usr/lib64/nagios/libexec/check_iptables_new DCW
+#command[check_disk1]=/usr/lib64/nagios/libexec/check_disk -w 40% -c 20% -p /dev/sda4
+#command[check_disk2]=/usr/lib64/nagios/libexec/check_disk -w 40% -c 20% -p /dev/sda2
+#command[check_disk3]=/usr/lib64/nagios/libexec/check_disk -w 40% -c 20% -p /dev/sda1
+
+{% if (inventory_hostname in groups['STREAMS_VLAN48']) %}
+command[check_streams]=/usr/lib64/nagios/libexec/check_process -s streams -c 1
+{% endif %}

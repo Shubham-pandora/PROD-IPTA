@@ -1,0 +1,50 @@
+---
+- hosts: all
+  tasks:
+
+    - name: Get server IP
+      command: hostname -I
+      register: ip_output
+
+    - name: Extract first IP address
+      set_fact:
+        server_ip: "{{ ip_output.stdout.split()[0] }}"
+
+    - name: Run diff for left side (lines in iptables not in auditiptables)
+      shell: diff --old-line-format='%L' --new-line-format='' --unchanged-line-format='' /etc/sysconfig/iptables  /etc/sysconfig/iptables_audit
+      register: left_diff
+      failed_when: left_diff.rc not in [0, 1]
+      ignore_errors: true
+
+    - name: Run diff for right side (lines in auditiptables not in iptables)
+      shell: diff --old-line-format='' --new-line-format='%L' --unchanged-line-format=''  /etc/sysconfig/iptables  /etc/sysconfig/iptables_audit
+      register: right_diff
+      failed_when: right_diff.rc not in [0, 1]
+      ignore_errors: true
+
+    - name: Prepare CSV row with Server IP, Original, Audit
+      set_fact:
+        csv_line: >-
+          "{{ server_ip }}","{{ left_diff.stdout | replace('\"', '\"\"') | replace('\n', '\\n') }}","{{ right_diff.stdout | replace('\"', '\"\"') | replace('\n', '\\n') }}"
+      delegate_to: localhost
+
+    - name: Set current working directory as variable
+      set_fact:
+        current_dir: "{{ lookup('pipe', 'pwd') }}"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Create CSV file with header if it doesn't exist
+      shell: |
+        [ -f "{{ current_dir }}/iptables_diff.csv" ] || echo '"Server IP","Original","Audit"' > "{{ current_dir }}/iptables_diff.csv"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Append CSV row to file
+      lineinfile:
+        path: "{{ current_dir }}/iptables_diff.csv"
+        line: "{{ csv_line }}"
+        create: yes
+        insertafter: EOF
+      delegate_to: localhost
+

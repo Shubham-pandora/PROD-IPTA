@@ -1,0 +1,12 @@
+---
+- include_vars: "setup-details.yml"
+- import_tasks: setup.yml
+  when: IPTABLES == 'YES'
+- import_tasks: iptables.yml
+  when: IPTABLES == 'YES'
+- import_tasks: iptablesaudit.yml
+  when: IPTABLESAUDIT == 'YES'
+- import_tasks: nagios.yml
+  when: NAGIOS == 'YES'
+
+

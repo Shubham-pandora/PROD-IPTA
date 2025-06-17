@@ -1,0 +1,7 @@
+- name: Check firewall
+  shell: iptables -L -n -v
+  no_log: True
+  register: command
+
+- debug: 
+    var: command.stdout_lines

@@ -1,0 +1,9 @@
+- name: Ensure firewalld is stopped and disabled
+  service: name=firewalld state=stopped enabled=no
+  no_log: True
+  failed_when: false
+
+- name:  Install iptables packages
+  yum:
+    name: "{{ iptables_pkgs }}"
+    state: present

@@ -1,0 +1,27 @@
+# - name: Install required packages
+#   yum:
+#     name: ["nrpe", "nagios-plugins-*"]
+#     state: present
+#     update_cache: yes
+
+- name: Configure nrpe template
+  template:
+    src: nrpe.cfg.j2
+    dest: "/etc/nagios/nrpe.cfg"
+    owner: root
+    group: root
+    mode: 0640
+    backup: yes
+  diff: true
+
+
+- name: Configure host template
+  template:
+    src: nagios.cfg.j2
+    dest: "/opt/{{ inventory_hostname }}.cfg"
+    owner: root
+    group: root
+    mode: 0640
+    backup: yes
+  diff: true
+  delegate_to: 192.168.0.108

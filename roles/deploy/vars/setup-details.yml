@@ -1,0 +1,7 @@
+iptables_pkgs:
+  - iptables-services
+  - iptables-utils
+iptables_service: iptables
+iptables_config: '/etc/sysconfig/iptables'
+iptables_audit: '/home/wsadmin/RRF_backups/iptables_audit'
+iptables_show_rules: true
