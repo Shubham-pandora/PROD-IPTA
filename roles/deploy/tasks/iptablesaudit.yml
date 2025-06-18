@@ -1,3 +1,17 @@
+- name: Check if /home/wsadmin/RRF_backups/ exists
+  stat:
+    path: /home/wsadmin/RRF_backups/
+  register: result
+
+- name: Create /home/wsadmin/RRF_backups/ if it doesn't exist
+  file:
+    path: /home/wsadmin/RRF_backups/
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: not result.stat.exists
+
 - name: Configure template for Audit
   template:
     src: iptables.j2
