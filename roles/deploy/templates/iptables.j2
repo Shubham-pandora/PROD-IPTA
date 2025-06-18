@@ -903,7 +903,7 @@
 ################## DRACHTIO_SIPSERVER ##################
 {% for host in groups['DCE_VLAN96'] %}
 ###DCE_VLAN96
--A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups['DCW_VLAN96'] | join(',') }} --dport 5060 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp -s {{ groups['DCE_VLAN96'] | join(',') }} --dport 5060 -j ACCEPT
 {% endfor %}
 {% endif %}
 ##################################################################
