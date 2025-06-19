@@ -1,4 +1,3 @@
-[root@dce-prod-201 tasks]# cat iptablesaudit.yml
 - name: Check if /home/wsadmin/RRF_backups/ exists
   stat:
     path: /home/wsadmin/RRF_backups/
